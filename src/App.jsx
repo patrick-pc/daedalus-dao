@@ -4,6 +4,7 @@ import {
   useEditionDrop,
   useToken,
   useVote,
+  useNetwork,
 } from '@thirdweb-dev/react'
 import { ChainId } from '@thirdweb-dev/sdk'
 import { useState, useEffect, useMemo } from 'react'
@@ -12,11 +13,14 @@ import { AddressZero } from '@ethersproject/constants'
 const App = () => {
   // Use the hooks thirdweb give us.
   const address = useAddress()
+  const network = useNetwork()
   const connectWithMetamask = useMetamask()
   console.log('👋 Address:', address)
 
   // Initialize our editionDrop contract
-  const editionDrop = useEditionDrop('0x41DFb5F8F3545628b41695d526aAe22D1347ff81')
+  const editionDrop = useEditionDrop(
+    '0x41DFb5F8F3545628b41695d526aAe22D1347ff81'
+  )
   // Initialize our token contract
   const token = useToken('0xc03e663e7d861dDbB2c735d1EfC7B05FBc7bF7f3')
   // Initialize our vote contract
@@ -192,6 +196,18 @@ const App = () => {
         <button onClick={connectWithMetamask} className='btn-hero'>
           Connect your wallet
         </button>
+      </div>
+    )
+  }
+
+  if (address && network?.[0].data.chain.id !== ChainId.Rinkeby) {
+    return (
+      <div className='unsupported-network'>
+        <h2>Please connect to Rinkeby</h2>
+        <p>
+          This dapp only works on the Rinkeby network, please switch networks in
+          your connected wallet.
+        </p>
       </div>
     )
   }
